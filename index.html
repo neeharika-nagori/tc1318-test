@@ -1,0 +1,5 @@
+<!doctype html><title>TC-1318 hover swap</title>
+<style>a.roll img.hov{display:none} a.roll:hover img.def{display:none} a.roll:hover img.hov{display:inline}</style>
+<p><label>Name <input id="name"></label> <button onclick="s1.textContent='Ready'">Continue</button></p><p id="s1"></p>
+<p><a href="#" class="roll" onclick="s2.textContent='Menu opened';return false"><img class="def" id="menu1Image" alt="Transfers" width="120" height="40" src="https://the-internet.herokuapp.com/img/avatar-blank.jpg"><img class="hov" id="menu1ImageHover" aria-hidden="true" alt="" width="360" height="40" src="https://the-internet.herokuapp.com/img/forkme_right_green_007200.png"></a></p><p id="s2"></p>
+<p><button onclick="s3.textContent='Cancelled'">Cancel transfer</button></p><p id="s3"></p>
