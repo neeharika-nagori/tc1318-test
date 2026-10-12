@@ -40,6 +40,10 @@
   .ccsSideMenuLevel1Container:hover a.ccsSideMenuLevel1 img.regular { display: none; }
   .ccsSideMenuLevel1Container:hover a.ccsSideMenuLevel1 img.hovered { display: inline; }
   .label-new { display: none; }
+  /* Dropdown arrow on the ROW (not inside the link, so the link's first box stays the icon). */
+  .ccsSideMenuLevel1Container[aria-expanded] { position: relative; }
+  .ccsSideMenuLevel1Container[aria-expanded]::after { content: '\25BE'; position: absolute; right: 22px; top: 50%; transform: translateY(-50%); color: var(--brand); font-size: 16px; pointer-events: none; }
+  .ccsSideMenuLevel1Container[aria-expanded="true"]::after { content: '\25B4'; }
 
   ul.ccsMenuLevel2 li a { display: block; padding: 7px 16px 7px 60px; color: var(--brand); text-decoration: none; font-size: 14px; }
   ul.ccsMenuLevel2 li a:hover { text-decoration: underline; }
@@ -159,7 +163,7 @@
   </main>
 </div>
 
-<div id="testLog">Test log (for engineers): e-Transfers menu not opened yet</div>
+<div id="testLog">Test log (for engineers): click "e-Transfers" in the left menu to open its dropdown</div>
 
 <script>
   (function () {
