@@ -40,10 +40,11 @@
   .ccsSideMenuLevel1Container:hover a.ccsSideMenuLevel1 img.regular { display: none; }
   .ccsSideMenuLevel1Container:hover a.ccsSideMenuLevel1 img.hovered { display: inline; }
   .label-new { display: none; }
-  /* Dropdown arrow on the ROW (not inside the link, so the link's first box stays the icon). */
-  .ccsSideMenuLevel1Container[aria-expanded] { position: relative; }
-  .ccsSideMenuLevel1Container[aria-expanded]::after { content: '\25BE'; position: absolute; right: 22px; top: 50%; transform: translateY(-50%); color: var(--brand); font-size: 16px; pointer-events: none; }
-  .ccsSideMenuLevel1Container[aria-expanded="true"]::after { content: '\25B4'; }
+  /* Dropdown arrow drawn by CSS only, so the row div keeps the real one's attributes (id + class,
+     no aria-*). It sits on the row, not in the link, so the link's first box stays the icon. */
+  .ccsSideMenuLevel1Container:has(> a.ccsSideMenuLevel1[aria-expanded]) { position: relative; }
+  .ccsSideMenuLevel1Container:has(> a.ccsSideMenuLevel1[aria-expanded])::after { content: '\25BE'; position: absolute; right: 22px; top: 50%; transform: translateY(-50%); color: var(--brand); font-size: 16px; pointer-events: none; }
+  .ccsSideMenuLevel1Container:has(> a.ccsSideMenuLevel1[aria-expanded="true"])::after { content: '\25B4'; }
 
   ul.ccsMenuLevel2 li a { display: block; padding: 7px 16px 7px 60px; color: var(--brand); text-decoration: none; font-size: 14px; }
   ul.ccsMenuLevel2 li a:hover { text-decoration: underline; }
@@ -92,7 +93,7 @@
         </div>
       </li>
       <li>
-        <div id="Container2_transactionMenus_top_topS_8_containerLevel1_0" class="ccsSideMenuLevel1Container" aria-controls="Container2_transactionMenus_top_topS_8_ulccsMenuLevel2_0" aria-expanded="false">
+        <div id="Container2_transactionMenus_top_topS_8_containerLevel1_0" class="ccsSideMenuLevel1Container">
           <a href="javascript:void(0);" id="Container2_transactionMenus_top_topS_8_aMG_0" class="ccsSideMenuLevel1" role="button" aria-controls="Container2_transactionMenus_top_topS_8_ulccsMenuLevel2_0" aria-expanded="false"><img class="regular" aria-hidden="true" id="menu35577Image" width="26" height="26" src="icons/etransfers.svg"><img class="hovered" aria-hidden="true" id="menu35577ImageHover" width="26" height="26" src="icons/etransfers-highlight.svg">e-Transfers</a>
           <span id="Container2_transactionMenus_top_topS_8_labelNew_0" class="label-new">NEW</span>
         </div>
@@ -168,7 +169,6 @@
 <script>
   (function () {
     var link = document.getElementById('Container2_transactionMenus_top_topS_8_aMG_0');
-    var row = document.getElementById('Container2_transactionMenus_top_topS_8_containerLevel1_0');
     var sub = document.getElementById('Container2_transactionMenus_top_topS_8_ulccsMenuLevel2_0');
     var logEl = document.getElementById('testLog');
     var pending = [{ to: 'Sample Payee', amount: '$25.00' }];
@@ -182,8 +182,14 @@
     function setMenu(open) {
       sub.style.display = open ? 'block' : 'none';
       link.setAttribute('aria-expanded', String(open));
-      row.setAttribute('aria-expanded', String(open));
     }
+
+    // The real link was recorded with class "ccsSideMenuLevel1 aria-focus", and only that one
+    // link had aria-focus, so the site adds it to the focused link. Do the same here.
+    document.querySelectorAll('a.ccsSideMenuLevel1').forEach(function (a) {
+      a.addEventListener('focus', function () { a.classList.add('aria-focus'); });
+      a.addEventListener('blur', function () { a.classList.remove('aria-focus'); });
+    });
 
     // Opens on CLICK (not hover), like the real menu. isTrusted tells a real mouse click
     // apart from a script click: the lcnc-app #5395 fix clicks the link with JS.
