@@ -8,7 +8,7 @@
   Test page for TC-1318. Copies only the SHAPE of the customer's side menu:
   - inline <a role="button"> whose FIRST child is a 26px icon, so a Playwright click
     on the link lands on the icon (the AI clicked the icon centre on the real site);
-  - on hover the grey icon is swapped for a "highlight" icon (img.hovered, aria-hidden),
+  - on hover the grey icon is swapped for a "highlight" icon (img.hovered, amber circle),
     so the recorder captures the highlight icon, which is display:none on replay;
   - the submenu is a sibling <ul style="display: none"> opened by a click handler.
   Same ids/classes as the real DOM so the recorded selectors look the same.
@@ -193,13 +193,20 @@
 
     // Opens on CLICK (not hover), like the real menu. isTrusted tells a real mouse click
     // apart from a script click: the lcnc-app #5395 fix clicks the link with JS.
+    // Plain names for what a click can land on inside the e-Transfers link.
+    var targetNames = {
+      menu35577ImageHover: 'the HIGHLIGHTED picture (menu35577ImageHover)',
+      menu35577Image: 'the normal picture (menu35577Image)',
+      Container2_transactionMenus_top_topS_8_aMG_0: 'the link itself (Container2_transactionMenus_top_topS_8_aMG_0)'
+    };
     link.addEventListener('click', function (e) {
       e.preventDefault();
       var open = sub.style.display === 'none';
       setMenu(open);
+      var landedOn = targetNames[e.target.id] || e.target.id || e.target.tagName;
       log('e-Transfers menu ' + (open ? 'opened' : 'closed') + ' by ' +
-        (e.isTrusted ? 'a real mouse click' : 'a script click (the #5395 fix path)') +
-        ', target: ' + (e.target.id || e.target.tagName));
+        (e.isTrusted ? 'a real mouse click. It landed on ' + landedOn
+                     : 'a script click on the link (the lcnc-app #5395 fix)'));
     });
 
     function show(view) {
